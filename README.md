@@ -11,6 +11,6 @@ Members:
 2. Go to CampusMapFinger.java
 3. Press shift + 10 or click the green arrow
 
-![Running CampusMapFinder in IntelliJ](run.png)
+![Running CampusMapFinder in IntelliJ](run.jpg)
 
 fuwari
