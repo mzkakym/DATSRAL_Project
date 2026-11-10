@@ -2,7 +2,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// Handles user interaction and runs the main text menu loop.
 public class Menu {
+    private static final String DEFAULT_MAP_FILE = "campus_map.txt";
+
     private final PlaceStore store;
     private final PathFinder finder;
     private Graph graph;
@@ -13,6 +16,7 @@ public class Menu {
         this.finder = finder;
     }
 
+    // Runs the main menu until the user selects option 4 to exit.
     public void run() {
         int choice;
         do {
@@ -47,28 +51,30 @@ public class Menu {
         } while (choice != 4);
     }
 
+    // Displays the available menu options.
     private void printMenu() {
-        System.out.println("\n=== Campus Map Finder ===");
+        System.out.println("\nCampus Map Finder");
         System.out.println("1. Load the map file.");
         System.out.println("2. Show all places in A-to-Z order.");
         System.out.println("3. Find a path between 2 places.");
         System.out.println("4. Quit");
     }
 
+    // Loads the campus map file and builds the graph.
     private void loadMapFile() {
-        System.out.print("Enter map filename (e.g., campus_map.txt): ");
-        String filename = scanner.nextLine().trim();
         try {
-            this.graph = MapFileReader.load(filename, store);
+            this.graph = MapFileReader.load(DEFAULT_MAP_FILE, store);
             this.finder.setGraph(graph);
-            System.out.println("Map loaded successfully!");
-            System.out.println("\n--- Adjacency List ---");
+            System.out.println("Map loaded successfully from "
+                    + DEFAULT_MAP_FILE + "!");
+            System.out.println("\nList of places:");
             graph.printGraph();
         } catch (IOException e) {
             System.out.println("Error loading file: " + e.getMessage());
         }
     }
 
+    // Prints all loaded campus places in alphabetical order.
     private void listPlaces() {
         if (store.isEmpty()) {
             System.out.println("No places loaded.");
@@ -77,6 +83,7 @@ public class Menu {
         store.printSorted();
     }
 
+    // Finds and prints the shortest path between two user-entered places.
     private void showPath() {
         if (store.isEmpty() || graph == null) {
             System.out.println("Please load a map first.");
@@ -107,6 +114,7 @@ public class Menu {
         System.out.println("Number of stops: " + (path.size() - 1));
     }
 
+    // Asks the user for a place name and checks if it exists in the store.
     private Place askForPlace(String prompt) {
         System.out.print(prompt);
         String name = scanner.nextLine().trim();
