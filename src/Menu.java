@@ -57,7 +57,7 @@ public class Menu {
             System.out.println("No places loaded");
             return;
         }
-        store.printSorted()
+        store.printSorted();
     }
 
     private void searchPlace() {
