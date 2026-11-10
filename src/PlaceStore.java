@@ -4,29 +4,32 @@ public class PlaceStore {
     private final ArrayList<Place> places = new ArrayList<>();
 
     public boolean add(Place place) {
-        if (find(place.getName()) != null) {
+        if (indexOf(place.getName()) != -1) {
             return false;
         }
         places.add(place);
         return true;
     }
 
-    public Place find(String name) {
-        for (Place p : places) {
-            if (p.getName().equalsIgnoreCase(name.trim())) {
-                return p;
-            }
-        }
-        return null;
-    }
-
     public int indexOf(String name) {
+        if (name == null) {
+            return -1;
+        }
+        String target = name.trim();
         for (int i = 0; i < places.size(); i++) {
-            if (places.get(i).getName().equalsIgnoreCase(name.trim())) {
+            if (places.get(i).getName().equalsIgnoreCase(target)) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public Place find(String name) {
+        int index = indexOf(name);
+        if (index == -1) {
+            return null;
+        }
+        return places.get(index);
     }
 
     public ArrayList<Place> sortedCopy() {
@@ -60,5 +63,11 @@ public class PlaceStore {
             System.out.println((i + 1) + ". " + places.get(i));
         }
     }
-}
 
+    public void printSorted() {
+        ArrayList<Place> sorted = sortedCopy();
+        for (int i = 0; i < sorted.size(); i++) {
+            System.out.println((i + 1) + ". " + sorted.get(i));
+        }
+    }
+}
