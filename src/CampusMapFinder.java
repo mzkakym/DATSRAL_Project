@@ -1,5 +1,8 @@
 public class CampusMapFinder {
     public static void main(String[] args) {
-        throw new UnsupportedOperationException();
+        PlaceStore store = new PlaceStore();
+        PathFinder finder = new PathFinder(null, store);
+        Menu menu = new Menu(store, finder);
+        menu.run();
     }
 }

@@ -1,8 +1,11 @@
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
     private final PlaceStore store;
     private final PathFinder finder;
+    private Graph graph;
     private final Scanner scanner = new Scanner(System.in);
 
     public Menu(PlaceStore store, PathFinder finder) {
@@ -27,7 +30,7 @@ public class Menu {
 
             switch (choice) {
                 case 1:
-                    // load campus_maptxt
+                    loadMapFile();
                     break;
                 case 2:
                     listPlaces();
@@ -45,27 +48,37 @@ public class Menu {
     }
 
     private void printMenu() {
-        System.out.println("\n=== Campus Map Finder===");
+        System.out.println("\n=== Campus Map Finder ===");
         System.out.println("1. Load the map file.");
         System.out.println("2. Show all places in A-to-Z order.");
         System.out.println("3. Find a path between 2 places.");
         System.out.println("4. Quit");
     }
 
+    private void loadMapFile() {
+        System.out.print("Enter map filename (e.g., campus_map.txt): ");
+        String filename = scanner.nextLine().trim();
+        try {
+            this.graph = MapFileReader.load(filename, store);
+            this.finder.setGraph(graph);
+            System.out.println("Map loaded successfully!");
+            System.out.println("\n--- Adjacency List ---");
+            graph.printGraph();
+        } catch (IOException e) {
+            System.out.println("Error loading file: " + e.getMessage());
+        }
+    }
+
     private void listPlaces() {
-        if (store.isEmpty()){
-            System.out.println("No places loaded");
+        if (store.isEmpty()) {
+            System.out.println("No places loaded.");
             return;
         }
         store.printSorted();
     }
 
-    private void searchPlace() {
-        throw new UnsupportedOperationException();
-    }
-
     private void showPath() {
-        if (store.isEmpty()) {
+        if (store.isEmpty() || graph == null) {
             System.out.println("Please load a map first.");
             return;
         }
@@ -84,12 +97,14 @@ public class Menu {
         }
 
         System.out.println("Path:");
-        for (Place p : path) {
-            System.out.print(p.getName() + " ");
+        for (int i = 0; i < path.size(); i++) {
+            System.out.print(path.get(i).getName());
+            if (i < path.size() - 1) {
+                System.out.print(" -> ");
+            }
         }
         System.out.println();
         System.out.println("Number of stops: " + (path.size() - 1));
-
     }
 
     private Place askForPlace(String prompt) {
