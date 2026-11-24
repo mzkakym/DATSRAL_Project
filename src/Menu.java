@@ -43,6 +43,9 @@ public class Menu {
                     showPath();
                     break;
                 case 4:
+                    visualizeGraph();
+                    break;
+                case 5:
                     System.out.println("Goodbye!");
                     break;
                 default:
@@ -57,7 +60,8 @@ public class Menu {
         System.out.println("1. Load the map file.");
         System.out.println("2. Show all places in A-to-Z order.");
         System.out.println("3. Find a path between 2 places.");
-        System.out.println("4. Quit");
+        System.out.println("4. Visualize the graph.");
+        System.out.println("5. Quit");
     }
 
     // Loads the campus map file and builds the graph.
@@ -125,5 +129,19 @@ public class Menu {
             return null;
         }
         return place;
+    }
+    // Asks for a root place and prints a full visualization of the graph.
+    private void visualizeGraph() {
+        if (store.isEmpty() || graph == null) {
+            System.out.println("Please load a map first.");
+            return;
+        }
+        System.out.print("Enter a root place for the layered view "
+                + "(press Enter for 'Taft-Avenue'): ");
+        String rootName = scanner.nextLine().trim();
+        if (rootName.isEmpty()) {
+            rootName = "Taft-Avenue";
+        }
+        graph.visualize(rootName);
     }
 }

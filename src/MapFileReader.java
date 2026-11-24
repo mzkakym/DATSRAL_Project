@@ -13,15 +13,17 @@ public class MapFileReader {
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
                 line = line.trim();
-                if (line.isEmpty()) {
+                if (line.isEmpty() || line.startsWith("#")) {
                     continue;
                 }
                 String[] parts = line.split("\\s+");
                 if (parts.length != 2) {
-                    throw new IOException("Line " + lineNumber + ": expected two places like 'Library Cafeteria'");
+                    throw new IOException("Line " + lineNumber
+                            + ": expected two places like 'Library Cafeteria'");
                 }
                 if (parts[0].equalsIgnoreCase(parts[1])) {
-                    throw new IOException("Line " + lineNumber + ": a road cannot connect a place to itself");
+                    throw new IOException("Line " + lineNumber
+                            + ": a road cannot connect a place to itself");
                 }
                 rows.add(parts);
             }
