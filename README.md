@@ -8,7 +8,7 @@ Members:
 
 # How to run the program
 1. Open your IDE (we currently use IntelliJ)
-2. Go to CampusMapFinger.java
+2. Go to CampusMapFinder.java
 3. Press shift + 10 or click the green arrow
 
 ![Running CampusMapFinder in IntelliJ](run.jpg)
