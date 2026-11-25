@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class Menu {
         this.finder = finder;
     }
 
-    // Runs the main menu until the user selects option 4 to exit.
+    // Runs the main menu until the user selects option 5 to exit.
     public void run() {
         int choice;
         do {
@@ -27,7 +28,7 @@ public class Menu {
             try {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid choice.");
+                System.out.println("Invalid input. Enter a menu number from 1 to 5.");
                 choice = -1;
                 continue;
             }
@@ -49,9 +50,10 @@ public class Menu {
                     System.out.println("Goodbye!");
                     break;
                 default:
-                    System.out.println("Please choose 1, 2, 3, or 4.");
+                    System.out.println("Invalid option: " + choice
+                            + ". Choose a number from 1 to 5.");
             }
-        } while (choice != 4);
+        } while (choice != 5);
     }
 
     // Displays the available menu options.
@@ -74,14 +76,20 @@ public class Menu {
             System.out.println("\nList of places:");
             graph.printGraph();
         } catch (IOException e) {
-            System.out.println("Error loading file: " + e.getMessage());
+            if (e instanceof FileNotFoundException) {
+                System.out.println("Map file '" + DEFAULT_MAP_FILE
+                        + "' was not found. Make sure it is in the program's working directory.");
+            } else {
+                System.out.println("Could not load map file '" + DEFAULT_MAP_FILE
+                        + "': " + e.getMessage());
+            }
         }
     }
 
     // Prints all loaded campus places in alphabetical order.
     private void listPlaces() {
         if (store.isEmpty()) {
-            System.out.println("No places loaded.");
+            System.out.println("No places are available. Load a map first using option 1.");
             return;
         }
         store.printSorted();
@@ -90,7 +98,7 @@ public class Menu {
     // Finds and prints the shortest path between two user-entered places.
     private void showPath() {
         if (store.isEmpty() || graph == null) {
-            System.out.println("Please load a map first.");
+            System.out.println("No map is loaded. Load a map first using option 1.");
             return;
         }
 
@@ -103,7 +111,8 @@ public class Menu {
         ArrayList<Place> path = finder.findPath(start, end);
 
         if (path == null || path.isEmpty()) {
-            System.out.println("No path found.");
+            System.out.println("No route connects '" + start.getName()
+                    + "' to '" + end.getName() + "'.");
             return;
         }
 
@@ -125,7 +134,8 @@ public class Menu {
 
         Place place = store.find(name);
         if (place == null) {
-            System.out.println("Place not found: " + name);
+            System.out.println("Place '" + name
+                    + "' was not found. Check the spelling and try again.");
             return null;
         }
         return place;
@@ -133,7 +143,7 @@ public class Menu {
     // Asks for a root place and prints a full visualization of the graph.
     private void visualizeGraph() {
         if (store.isEmpty() || graph == null) {
-            System.out.println("Please load a map first.");
+            System.out.println("No map is loaded. Load a map first using option 1.");
             return;
         }
         System.out.print("Enter a root place for the layered view "
@@ -141,6 +151,11 @@ public class Menu {
         String rootName = scanner.nextLine().trim();
         if (rootName.isEmpty()) {
             rootName = "Taft-Avenue";
+        }
+        if (store.find(rootName) == null) {
+            System.out.println("Cannot visualize: root place '" + rootName
+                    + "' was not found. Enter an existing place name.");
+            return;
         }
         graph.visualize(rootName);
     }
